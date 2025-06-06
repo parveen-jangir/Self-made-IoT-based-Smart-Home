@@ -3,7 +3,7 @@
 #include <EEPROM.h>
 #include <PubSubClient.h>
 
-const char* mqtt_server = "20.198.48.206"; 
+const char* mqtt_server = "65.0.75.212"; 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -67,14 +67,14 @@ void getCredentials(){
   {
     if(EEPROM.read(i) == '\0') break;
     ssid += char(EEPROM.read(i));
-    // Serial.println(ssid);
+    Serial.println(ssid);
   }
   
   for (int i = 100; i < 132; i++)
   {
     if(EEPROM.read(i) == '\0') break;
     pass += char(EEPROM.read(i));
-    // Serial.println(pass);
+    Serial.println(pass);
   }
 
   connectToWiFi(ssid, pass);
@@ -180,6 +180,7 @@ void loop() {
   if(Serial.available()){
     serialData = Serial.readStringUntil('\n');
     serialData.trim();
+    Serial.println(serialData);
   }
 
   if(serialData == "setup"){
@@ -187,8 +188,7 @@ void loop() {
   }
   
   client.loop();
-  if (!client.connected()) {
+  if (WiFi.status() == WL_CONNECTED && !client.connected()) {
     reconnect();
   }
 }
-
